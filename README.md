@@ -57,6 +57,37 @@ Two things worth knowing:
   also the kind of thing heuristic AV eyes — signing plus the version resource
   is what keeps it quiet.
 
+## Installing on someone else's PC
+
+You don't need a compiler on the target machine — build the `.exe` once and
+carry that single file over. Everything (gif, mp3, icon) is compiled in and the
+CRT is linked statically (`/MT`), so there's **no** VC++ redistributable to
+install; it runs on Windows 10/11 as-is.
+
+1. **Build on any Windows PC** with Visual Studio (the free Community edition,
+   "Desktop development with C++" workload) — `build.bat` → `build\therockware.exe`.
+   You cannot build this on the Mac: it links Windows-only libraries (WIC, Media
+   Foundation, XAudio2) and needs MSVC.
+2. **Copy just that one `.exe`** to the other machine.
+3. Run `therockware.exe --install` there. It copies itself to
+   `%LOCALAPPDATA%\TheRockWare`, adds the startup entry, and starts running.
+   `--uninstall` removes it.
+
+**The one speed bump — SmartScreen.** An exe that arrived from another computer
+carries Windows' "Mark of the Web", so the first run shows a blue *"Windows
+protected your PC"* box. Get past it either way:
+
+- Right-click the exe → **Properties → Unblock** (or `Unblock-File
+  therockware.exe` in PowerShell) before running, **or**
+- On the warning, click **More info → Run anyway**.
+
+Note that `sign.ps1 -SelfSigned` does **not** help here: it trusts the exe only
+on the machine that made the cert. On someone else's PC it still counts as
+unsigned unless you install your cert there too, or use a real CA cert (an **EV**
+cert is the only thing that clears SmartScreen with no prompt at all). For a
+prank on a friend, the one-time Unblock/Run-anyway click is the practical route.
+Heads-up too: it's a global mouse hook, so some antivirus may warn about it.
+
 ## How it works
 
 | piece | macOS | Windows |
