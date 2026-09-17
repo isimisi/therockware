@@ -1,0 +1,20 @@
+# Build output
+build/
+*.o
+*.obj
+*.res
+*.pdb
+*.ilk
+*.idb
+*.exe
+*.exp
+*.lib
+
+# Signing material — never commit a certificate or its password
+*.pfx
+*.p12
+*.cer
+*.key
+
+# macOS
+.DS_Store
