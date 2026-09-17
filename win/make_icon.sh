@@ -9,8 +9,8 @@ set -euo pipefail
 cd "$(dirname "$0")"
 
 FRAME="${1:-11}"
-GIF="assets/the-rock.gif"
-ICO="assets/the-rock.ico"
+GIF="../assets/the-rock.gif"
+ICO="../assets/the-rock.ico"
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 

@@ -1,7 +1,7 @@
 #include <winver.h>
 
 // Tray / Explorer icon, baked into the exe.
-1 ICON "assets\\the-rock.ico"
+1 ICON "..\\assets\\the-rock.ico"
 
 // RT_MANIFEST
 1 24 "app.manifest"

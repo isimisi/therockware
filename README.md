@@ -12,13 +12,26 @@ nothing off disk.
 <br>
 
 ```
-mac.cpp   ->  build/therockware       (Objective-C++ / Cocoa)
-win.cpp   ->  build/therockware.exe   (Win32 / WIC / Media Foundation / XAudio2)
+mac/mac.cpp   ->  mac/build/therockware       (Objective-C++ / Cocoa)
+win/win.cpp   ->  win/build/therockware.exe   (Win32 / WIC / Media Foundation / XAudio2)
+```
+
+Layout: platform code lives in `mac/` and `win/`; the media in `assets/` and the
+compiled-in header `assets_data.h` are shared at the root.
+
+```
+therockware/
+├── assets/            the-rock.gif, explosion-meme.mp3, the-rock.ico
+├── assets_data.h      generated — the media baked into a C header (shared)
+├── embed_assets.sh    regenerates assets_data.h from assets/
+├── mac/               mac.cpp, build.sh, install.sh, uninstall.sh
+└── win/               win.cpp, build.bat, sign.ps1, win.rc, app.manifest, make_icon.sh
 ```
 
 ## macOS
 
 ```
+cd mac
 ./install.sh      # build, install to ~/Library/Application Support, start at login
 ./uninstall.sh
 ```
@@ -33,6 +46,7 @@ Menu: **Pause** / **Test Pop** / **Quit**.
 From an **x64 Native Tools Command Prompt for VS**:
 
 ```
+cd win
 build.bat
 powershell -ExecutionPolicy Bypass -File sign.ps1 -SelfSigned
 build\therockware.exe --install      ( --uninstall to undo )
@@ -65,7 +79,8 @@ CRT is linked statically (`/MT`), so there's **no** VC++ redistributable to
 install; it runs on Windows 10/11 as-is.
 
 1. **Build on any Windows PC** with Visual Studio (the free Community edition,
-   "Desktop development with C++" workload) — `build.bat` → `build\therockware.exe`.
+   "Desktop development with C++" workload) — `cd win && build.bat` →
+   `win\build\therockware.exe`.
    You cannot build this on the Mac: it links Windows-only libraries (WIC, Media
    Foundation, XAudio2) and needs MSVC.
 2. **Copy just that one `.exe`** to the other machine.
@@ -110,15 +125,15 @@ unhooks anything slow.
 ## Rebuilding
 
 ```
-./embed_assets.sh   # re-bake assets/ into assets_data.h after swapping media
-./build.sh          # macOS
-build.bat           # Windows
+./embed_assets.sh      # (root) re-bake assets/ into assets_data.h after swapping media
+mac/build.sh           # macOS
+win\build.bat          # Windows
 ```
 
-The Windows tray/exe icon is one frame of the gif, baked in via `win.rc`:
+The Windows tray/exe icon is one frame of the gif, baked in via `win/win.rc`:
 
 ```
-./make_icon.sh 11   # frame 11 = the eyebrow raise (default); 12 frames, 0-11
+cd win && ./make_icon.sh 11   # frame 11 = the eyebrow raise (default); 12 frames, 0-11
 ```
 
 It extracts that frame with ImageIO and assembles a 6-size (16-256px) .ico.
